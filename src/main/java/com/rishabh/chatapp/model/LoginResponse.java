@@ -12,4 +12,6 @@ public class LoginResponse {
 
     public UUID userId;
 
+    public String name;
+
 }
