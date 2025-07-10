@@ -49,6 +49,8 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "contacts")
     private Set<User> connectedUsers = new HashSet<>();
 
+
+    //readme for clarification on the many to many relatiionship here.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

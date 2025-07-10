@@ -26,6 +26,8 @@ public class Message {
     private UUID fromUserId;
     private UUID toUserId;
     private String message;
+    private String from;
+    private String to;
 
     @CreationTimestamp
     private Timestamp sentAt;

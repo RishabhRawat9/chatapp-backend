@@ -35,6 +35,10 @@ public class UserService {
         User User = currUser.get();
         User.getContacts().add(Cuser);
         userRepo.save(User);
+
+        Cuser.getContacts().add(User);
+        userRepo.save(Cuser);
+
         return "contact added";
     }
 

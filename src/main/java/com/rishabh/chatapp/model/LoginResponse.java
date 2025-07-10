@@ -14,4 +14,6 @@ public class LoginResponse {
 
     public String name;
 
+    public String email;
+
 }
