@@ -1,10 +1,7 @@
 package com.rishabh.chatapp.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "user_messages")
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,8 +24,8 @@ public class Message {
     private UUID fromUserId;
     private UUID toUserId;
     private String message;
-    private String from;
-    private String to;
+    private String sender;
+    private String receiver;
 
     @CreationTimestamp
     private Timestamp sentAt;

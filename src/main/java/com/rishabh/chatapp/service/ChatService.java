@@ -27,7 +27,7 @@ public class ChatService {
         Optional<User> from =  userRepo.findByEmail(msg.getFrom());
         Optional<User> to =  userRepo.findByEmail(msg.getTo());
         if(from.isPresent()&& to.isPresent()){
-            Message message = Message.builder().message(msg.getMessage()).from(from.get().getEmail()).to(to.get().getEmail()).fromUserId(from.get().getUserId()).toUserId(to.get().getUserId()).build();
+            Message message = Message.builder().message(msg.getMessage()).sender(from.get().getEmail()).receiver(to.get().getEmail()).fromUserId(from.get().getUserId()).toUserId(to.get().getUserId()).build();
             messageRepo.save(message);
             System.out.println("message saved");
 

@@ -51,7 +51,7 @@ public class ContactController {
     public ResponseEntity<?> getChatHistory(@PathVariable String user, @PathVariable String friend){
         List<Message> messages =  messageService.getMessages(user, friend);
 
-        List<MessageDto>list =messages.stream().map(el-> MessageDto.builder().message(el.getMessage()).from(el.getFrom()).to(el.getTo()).sentAt(el.getSentAt()).build()).toList();
+        List<MessageDto>list =messages.stream().map(el-> MessageDto.builder().message(el.getMessage()).from(el.getSender()).to(el.getReceiver()).sentAt(el.getSentAt()).build()).toList();
 
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
