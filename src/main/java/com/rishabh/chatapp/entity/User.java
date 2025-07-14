@@ -11,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
 import java.util.*;
 
 @Entity
@@ -18,7 +19,7 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
+@Table(name = "chat_users")
 public class User implements UserDetails {
     @Id
     private UUID userId; // at time of signup it's generated.
@@ -33,8 +34,8 @@ public class User implements UserDetails {
     private String password;
 
     @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
-    private Date createdAt;
+    @Column(updatable = false, name = "created_at", columnDefinition = "TIMESTAMPTZ")
+    private Instant createdAt;
 
     @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

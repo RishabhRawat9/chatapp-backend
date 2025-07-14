@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,8 @@ public class MessageService {
         if(username.isPresent()&& friendname.isPresent()){
             UUID uid = username.get().getUserId();
             UUID fid = friendname.get().getUserId();//only 1 week before messages i am initially fetching.
-            Timestamp time = Timestamp.from(Instant.now().minus(7, ChronoUnit.DAYS));
+            Instant time = Instant.now().minus(7, ChronoUnit.DAYS);
+
             List<Message> messages = messageRepo.getHistory(uid, fid,time);
             return messages;
         }

@@ -1,6 +1,9 @@
 package com.rishabh.chatapp.config;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rishabh.chatapp.service.JwtService;
 import com.rishabh.chatapp.service.UserDetailServiceImpl;
 import io.jsonwebtoken.Jwt;
@@ -9,6 +12,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -36,7 +40,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         this.userDetailService =userDetailService;
     }
 
-    @Override
+
+    @Override//for authenticating the user through his jwt.
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptor() {
             @Override
@@ -69,11 +74,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         config.enableSimpleBroker("/topic");
         config.setApplicationDestinationPrefixes("/app", "/queue"); // these are conventions for pub/sub version and point to point resp.
         config.setPreservePublishOrder(true);
+        config.setUserDestinationPrefix("/user");
+
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:5173");
+        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:5173"); //websockets endpoints have to be explicitly configured to allow cross origin requests. //doesn't use the already configured spring security ones/
     }
 
 }

@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -16,19 +16,21 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name = "user_messages")
+@Table(name = "chat_messages")
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    private UUID id;
     private UUID fromUserId;
     private UUID toUserId;
     private String message;
     private String sender;
     private String receiver;
+    @Column(name = "sent_at", columnDefinition = "TIMESTAMPTZ")
+    private Instant sentAt;
 
-    @CreationTimestamp
-    private Timestamp sentAt;
+    @Column(name = "delivered_at", columnDefinition = "TIMESTAMPTZ")
+    private Instant deliveredAt;
 
     private UUID groupId;
 

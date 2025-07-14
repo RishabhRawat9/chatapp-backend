@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ChatService {
@@ -22,14 +23,16 @@ public class ChatService {
 
     }
 
-    public void saveMessage(SimpleMsg msg){
+    public SimpleMsg saveMessage(SimpleMsg msg){
         System.out.println(msg.getFrom() +" "+msg.getTo());
         Optional<User> from =  userRepo.findByEmail(msg.getFrom());
         Optional<User> to =  userRepo.findByEmail(msg.getTo());
         if(from.isPresent()&& to.isPresent()){
-            Message message = Message.builder().message(msg.getMessage()).sender(from.get().getEmail()).receiver(to.get().getEmail()).fromUserId(from.get().getUserId()).toUserId(to.get().getUserId()).build();
+            Message message = Message.builder().id(UUID.randomUUID()).message(msg.getMessage()).sender(from.get().getEmail()).receiver(to.get().getEmail()).fromUserId(from.get().getUserId()).toUserId(to.get().getUserId()).sentAt(msg.getSentAt()).build();
             messageRepo.save(message);
-            System.out.println("message saved");
+    //ok so now messages can be tracked through their id from the client, setup the ack delivery system for the client
+            return msg;
+
 
         }
         else{

@@ -3,6 +3,7 @@ package com.rishabh.chatapp.controllers;
 import com.rishabh.chatapp.entity.Message;
 import com.rishabh.chatapp.entity.User;
 import com.rishabh.chatapp.model.AddContactDto;
+import com.rishabh.chatapp.model.SimpleMsg;
 import com.rishabh.chatapp.service.MessageDto;
 import com.rishabh.chatapp.service.MessageService;
 import com.rishabh.chatapp.service.UserService;
@@ -51,7 +52,7 @@ public class ContactController {
     public ResponseEntity<?> getChatHistory(@PathVariable String user, @PathVariable String friend){
         List<Message> messages =  messageService.getMessages(user, friend);
 
-        List<MessageDto>list =messages.stream().map(el-> MessageDto.builder().message(el.getMessage()).from(el.getSender()).to(el.getReceiver()).sentAt(el.getSentAt()).build()).toList();
+        List<SimpleMsg>list =messages.stream().map(el-> SimpleMsg.builder().id(el.getId()).message(el.getMessage()).from(el.getSender()).to(el.getReceiver()).sentAt(el.getSentAt()).build()).toList();
 
         return new ResponseEntity<>(list, HttpStatus.OK);
     }

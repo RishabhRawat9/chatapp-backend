@@ -1,9 +1,11 @@
 package com.rishabh.chatapp.service;
 
 
+import com.rishabh.chatapp.entity.ChatStatus;
 import com.rishabh.chatapp.entity.User;
 import com.rishabh.chatapp.model.AddContactDto;
 import com.rishabh.chatapp.model.ContactResponseDto;
+import com.rishabh.chatapp.repository.ChatStatusRepo;
 import com.rishabh.chatapp.repository.UserRepo;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -15,12 +17,15 @@ import java.util.*;
 public class UserService {
 
     private final UserRepo userRepo;
-    public UserService(UserRepo userRepo){
+    private final ChatStatusRepo chatStatusRepo;
+    public UserService(UserRepo userRepo, ChatStatusRepo chatStatusRepo){
         this.userRepo = userRepo;
+        this.chatStatusRepo = chatStatusRepo;
+
     }
 
 
-    public String addContact(AddContactDto dto){
+    public UUID addContact(AddContactDto dto){//also create a new entry in chatStatus table and return the id .
         //ok so validate the contact through the contactId.
         Optional<User> contactUser =  userRepo.findByEmail(dto.getEmail().trim());
         if(contactUser.isEmpty()){
@@ -39,7 +44,19 @@ public class UserService {
         Cuser.getContacts().add(User);
         userRepo.save(Cuser);
 
-        return "contact added";
+        String userEmail = User.getEmail();
+        String friendEMail = Cuser.getEmail();
+
+
+        UUID id = UUID.randomUUID();
+        UUID id2 = UUID.randomUUID();
+        ChatStatus entry1 = ChatStatus.builder().id(id).sender(userEmail).receiver(friendEMail).build();
+        ChatStatus entry2 = ChatStatus.builder().id(id2).sender(friendEMail).receiver(userEmail).build();
+        chatStatusRepo.save(entry1);
+        chatStatusRepo.save(entry2); //there will be two entries for two users,
+
+
+        return id;
     }
 
     public Set<ContactResponseDto> getContacts(UUID userId){
