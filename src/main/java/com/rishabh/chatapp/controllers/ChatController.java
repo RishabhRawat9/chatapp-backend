@@ -36,8 +36,21 @@ public class ChatController {
 
     }
 
+    @MessageMapping("/ping")
+    public void handlePing(SimpleMsg ping){
+        //ok so a ping is fired from a client, now we gotta check the msg and send this ping to the correct person.
+        System.out.println("message is here "+ ping.getMessage());
+        messagingTemplate.convertAndSend("/topic/private/"+ping.getTo(), ping);
+    }
+   @MessageMapping("/pong")
+    public void handlePong(SimpleMsg pong){
+        //ok so a ping is fired from a client, now we gotta check the msg and send this ping to the correct person.
+       System.out.println("message is here "+ pong.getMessage());
+        messagingTemplate.convertAndSend("/topic/private/"+pong.getTo(), pong);
+    }
+
     @MessageMapping("/ack")
-    public void handleAck(SimpleMsg msg, Principal principal) {
+    public void handleAck(SimpleMsg msg) {
 
         //now this is a seen event, that i gotta handle and update the state for all other messages
         //get the message id, fromid ,toid, based on these three

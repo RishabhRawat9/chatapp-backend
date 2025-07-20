@@ -20,6 +20,8 @@ public class SimpleMsg {
     public String to;
     public Instant sentAt;
     public Instant seenAt;
+    public String type;
+
 
 
 
