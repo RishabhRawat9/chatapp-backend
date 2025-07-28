@@ -37,42 +37,55 @@ public class ChatController {
     }
 
     @MessageMapping("/ping")
-    public void handlePing(SimpleMsg ping){
+    public void handlePing(SimpleMsg ping) {
         //ok so a ping is fired from a client, now we gotta check the msg and send this ping to the correct person.
-        System.out.println("message is here "+ ping.getMessage());
-        messagingTemplate.convertAndSend("/topic/private/"+ping.getTo(), ping);
+        System.out.println("message is here " + ping.getMessage());
+        messagingTemplate.convertAndSend("/topic/private/" + ping.getTo(), ping);
     }
-   @MessageMapping("/pong")
-    public void handlePong(SimpleMsg pong){
+
+    @MessageMapping("/pong")
+    public void handlePong(SimpleMsg pong) {
         //ok so a ping is fired from a client, now we gotta check the msg and send this ping to the correct person.
-       System.out.println("message is here "+ pong.getMessage());
-        messagingTemplate.convertAndSend("/topic/private/"+pong.getTo(), pong);
+        System.out.println("message is here " + pong.getMessage());
+        messagingTemplate.convertAndSend("/topic/private/" + pong.getTo(), pong);
     }
 
     @MessageMapping("/ack")
     public void handleAck(SimpleMsg msg) {
 
-        //now this is a seen event, that i gotta handle and update the state for all other messages
-        //get the message id, fromid ,toid, based on these three
-        System.out.println(msg.getFrom() +"from -----   "+ msg.getTo() +"-->to  ");
+        //now when a receipt arrives for the seen message then i gotta update it in the db only don't publish this to anyother users inbox.
+
+
+//        Optional<Message> message = messageRepo.findById(msg.getId());
+//        if(message.isEmpty()){
+//            throw new RuntimeException("message not found whle handling the ack receipt.");
+//        }
+//        message.get().setDeliveredAt(msg.getDeliveredAt());
+//        messageRepo.save(message.get());
+//
+//        //now this is a seen event, that i gotta handle and update the state for all other messages
+//        //get the message id, fromid ,toid, based on these three
+        System.out.println(msg.getFrom() + "from -----   " + msg.getTo() + "-->to  ");
         Optional<ChatStatus> reciept = chatStatusRepo.findChatByEmails(msg.getFrom(), msg.getTo());
         //ok so i have my chatStatus now, i gotta update it according to the last message.
-        if(reciept.isEmpty()) throw new RuntimeException("not found the chat");
+        if (reciept.isEmpty()) throw new RuntimeException("not found the chat");
 
         //hey so see if i say that the chat b/w these two users would have only one entry then there would be a problem because i would be trying to sync the seen messages for both the participants with just one entry right.
 
         ChatStatus obj = reciept.get();
-        //if for the messages the seen is set already then i donn't have to set them again.
+
 
         System.out.println(msg.getId());
         obj.setLastSeenMsg(msg.getId());
-        obj.setSeenAt(msg.getSeenAt());
+        obj.setSeenAt(msg.getDeliveredAt());
         obj.setUpdatedAt(Instant.now());
         chatStatusRepo.save(obj);
 
-        messagingTemplate.convertAndSend( "/topic/receipt", obj);
+//        messagingTemplate.convertAndSend("/topic/receipt", obj);
+        //don't have to send this to anyone the user will load this whenver he loads the chat only.
 
-        //now i am ready to send this receipt to the sender
+
+
     }
 
     @MessageMapping("/chat")
